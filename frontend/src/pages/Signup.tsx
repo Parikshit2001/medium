@@ -1,12 +1,34 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button, Inputbox, Quote } from "../components";
 import { v4 as uuid } from "uuid";
 import { useState } from "react";
+import axios from "axios";
+import { URL } from "../constants/constants";
 
 function Signup() {
-  const [username, setUsername] = useState<string>();
-  const [email, setEmail] = useState<string>();
-  const [password, setPassword] = useState<string>();
+  const [username, setUsername] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const navigate = useNavigate()
+
+  const handleClick = async () => {
+    axios
+      .post(`${URL}/api/v1/user/signup`, {
+        name: username,
+        email,
+        password,
+      })
+      .then((response) => {
+        localStorage.setItem("token", response.data.jwt);
+        navigate("/blogs")
+      })
+      .catch((response) => {
+        alert(response.response.data.error)
+      })
+      .finally(() => {
+      });
+  };
+
   return (
     <div className="grid grid-cols-2">
       <div className="col-span-1 flex justify-center flex-col items-center">
@@ -42,7 +64,7 @@ function Signup() {
               label="Password"
               type="password"
             />
-            <Button label="Sign Up" onClick={async () => {}} />
+            <Button label="Sign Up" onClick={handleClick} />
           </div>
         </div>
       </div>

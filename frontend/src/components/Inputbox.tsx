@@ -5,7 +5,7 @@ interface Inputboxtype{
   placeholder?: string,
   type?: string,
   value: string | undefined,
-  setValue: React.Dispatch<React.SetStateAction<string | undefined>>
+  setValue: React.Dispatch<React.SetStateAction<string>>
 }
 
 function Inputbox({id="1", label, placeholder="", type="text", value, setValue}: Inputboxtype) {
