@@ -32,7 +32,7 @@ function Blog() {
           <p className="py-2">{content}</p>
         </div>
         {/* Right Part */}
-        <div className="w-1/4 flex flex-col space-y-3 fixed right-10">
+        <div className="w-1/4 hidden lg:flex flex-col space-y-3 fixed right-10">
           {/* Author */}
           <div>
             <p className="font-semibold">Author</p>

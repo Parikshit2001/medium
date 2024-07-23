@@ -5,6 +5,7 @@ import Button from "./Button";
 import Appbar from "./Appbar";
 import BlogTile from "./BlogTile";
 import Loading from "./Loading";
+import Avatar from "./Avatar";
 export {
   Auth,
   Quote,
@@ -12,5 +13,6 @@ export {
   Button,
   Appbar,
   BlogTile,
-  Loading
+  Loading,
+  Avatar
 }

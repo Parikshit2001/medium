@@ -1,5 +1,5 @@
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import { Blog, Signup, Signin, Blogs, Publish } from "./pages";
+import { Blog, Signup, Signin, Blogs, Publish, Profile } from "./pages";
 import { useEffect } from "react";
 
 function App() {
@@ -15,6 +15,7 @@ function App() {
       <Route path="/blog/:id" element={<Blog />} />
       <Route path="/blogs" element={<Blogs />} />
       <Route path="/publish" element={<Publish />} />
+      <Route path="/profile" element={<Profile />} />
     </Routes>
   );
 }
