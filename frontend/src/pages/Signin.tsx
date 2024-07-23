@@ -30,8 +30,8 @@ function Signin() {
   };
 
   return (
-    <div className="grid grid-cols-2">
-      <div className="col-span-1 flex justify-center flex-col items-center">
+    <div className="grid grid-cols-1 lg:grid-cols-2">
+      <div className="col-span-1 flex justify-center flex-col items-center min-h-screen">
         <div className="w-1/2 min-w-80">
           <div className="flex flex-col items-center space-y-1 pb-5">
             <h1 className="font-bold text-4xl">Create an account</h1>
