@@ -13,7 +13,7 @@ function Appbar() {
         <Link to={"/blogs"}>
           <h1 className="font-semibold text-3xl">Medium</h1>
         </Link>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-3">
           {location.pathname.slice(1) === "blogs" ? (
             <button
               className="bg-green-600 rounded-full px-3 py-1 text-white"

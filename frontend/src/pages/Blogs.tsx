@@ -5,12 +5,13 @@ import { URL } from "../constants/constants";
 import { Link } from "react-router-dom";
 
 interface getBlogsResponse {
-  title: string,
-  content: string,
-  id: string,
+  title: string;
+  content: string;
+  id: string;
+  published: string;
   author: {
-    name: string
-  }
+    name: string;
+  };
 }
 
 function Blogs() {
@@ -24,17 +25,24 @@ function Blogs() {
     getBlogs();
   }, []);
 
+  console.log(blogs);
+
   return (
     <div>
       <Appbar />
       {/* All the blogs */}
       <div className="flex flex-col py-6 px-2 w-1/2 min-w-[480px] mx-auto">
         {blogs.map((blog) => {
+          const dateObject = new Date(blog.published);
+          const formattedDate = `${dateObject.getFullYear()} ${dateObject.toLocaleDateString(
+            "en-US",
+            { month: "short" }
+          )} ${dateObject.getDate()}`;
           return (
             <Link key={blog.id} to={`/blog/${blog.id}`}>
               <BlogTile
                 name={blog.author.name}
-                date={"saf"}
+                date={formattedDate}
                 title={blog.title}
                 content={blog.content}
               />
