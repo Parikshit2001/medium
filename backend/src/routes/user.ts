@@ -2,9 +2,10 @@ import { signinInput, signupInput } from "@parik100x/medium-common-app";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { Hono } from "hono";
-import { setCookie } from "hono/cookie";
-import { sign } from "hono/jwt";
+import { getCookie, setCookie } from "hono/cookie";
+import { sign, verify } from "hono/jwt";
 import { TOKEN } from "./constants";
+import { JWTPayload } from "hono/utils/jwt/types";
 
 export const userRouter = new Hono<{
   Bindings: {
@@ -12,6 +13,10 @@ export const userRouter = new Hono<{
     JWT_SECRET: string;
   };
 }>();
+
+interface UserPayload extends JWTPayload {
+  id: string;
+}
 
 userRouter.post("/signup", async (c) => {
   try {
@@ -85,13 +90,13 @@ userRouter.post("/signin", async (c) => {
     const user = await prisma.user.findUnique({
       where: {
         email: email,
-        password: password
+        password: password,
       },
     });
     if (!user) {
       throw new Error("User not found, Invalid email/password combination");
     }
-    
+
     const jwt = await sign({ id: user.id }, c.env.JWT_SECRET);
     const options = {
       httpOnly: true,
@@ -102,6 +107,40 @@ userRouter.post("/signin", async (c) => {
     return c.json({
       message: "Login Successful",
     });
+  } catch (error: any) {
+    console.error(error);
+    c.status(403);
+    return c.json({
+      error: error.message,
+    });
+  }
+});
+
+userRouter.get("/info", async (c) => {
+  try {
+    const prisma = new PrismaClient({
+      datasourceUrl: c.env?.DATABASE_URL,
+    }).$extends(withAccelerate());
+    if (!prisma) {
+      throw new Error("Error while initilaisin");
+    }
+    const token = getCookie(c, TOKEN);
+    if (!token) {
+      throw new Error("No token found in authorization header");
+    }
+    const user = (await verify(token, c.env.JWT_SECRET)) as UserPayload;
+
+    const userData = await prisma.user.findUnique({
+      where: {
+        id: user.id,
+      },
+      select: {
+        name: true,
+        password: false,
+      },
+    });
+
+    return c.json(userData);
   } catch (error: any) {
     console.error(error);
     c.status(403);
