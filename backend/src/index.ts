@@ -11,7 +11,10 @@ const app = new Hono<{
 }>();
 
 // app.use(cors())
-app.use("/*", cors());
+app.use("/*", cors({
+  origin: ["http://localhost:5173", "https://medium-fontend.vercel.app"],
+  credentials: true
+}));
 app.route("/api/v1/user", userRouter);
 app.route("/api/v1/blog", blogRouter);
 
