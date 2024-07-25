@@ -18,14 +18,14 @@ function Blogs() {
   const [blogs, setBlogs] = useState<getBlogsResponse[] | []>([]);
   useEffect(() => {
     const getBlogs = async () => {
-      axios.get(`${URL}/api/v1/blog/bulk`).then((response) => {
-        setBlogs(response.data.data);
-      });
+      axios
+        .get(`${URL}/api/v1/blog/bulk`, { withCredentials: true })
+        .then((response) => {
+          setBlogs(response.data.data);
+        });
     };
     getBlogs();
   }, []);
-
-  console.log(blogs);
 
   return (
     <div>

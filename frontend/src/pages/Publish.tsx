@@ -11,12 +11,8 @@ function Publish() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token")
-    console.log(token)
-    if (token === null || "") {
-      navigate("/signin")
-    }
-  })
+    // TODO: Implement navigating to signin page if user getDetails endpint return null
+  }, []);
 
   const handlePublish = async () => {
     axios
@@ -27,18 +23,16 @@ function Publish() {
           content,
         },
         {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+          withCredentials: true,
         }
       )
       .then((response) => {
-        navigate(`/blog/${response.data.id}`)
+        navigate(`/blog/${response.data.id}`);
       })
       .catch((response) => {
-        console.log(response)
-        alert("Error while publishing the blog")
-      })
+        console.log(response);
+        alert("Error while publishing the blog");
+      });
   };
 
   return (

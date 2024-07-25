@@ -8,20 +8,24 @@ import { URL } from "../constants/constants";
 function Signin() {
   const [name, setName] = useState<string>(""); //    username or email
   const [password, setPassword] = useState<string>("");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleClick = async () => {
     axios
-      .post(`${URL}/api/v1/user/signin`, {
-        email: name,
-        password,
-      })
+      .post(
+        `${URL}/api/v1/user/signin`,
+        {
+          email: name,
+          password,
+        },
+        { withCredentials: true }
+      )
       .then((response) => {
-        localStorage.setItem("token", response.data.jwt);
-        navigate("/blogs")
+        console.log(response);
+        navigate("/blogs");
       })
       .catch((response) => {
-        alert(response.response.data.error)
+        alert(response.response.data.error);
       })
       .finally(() => {
         setName("");
@@ -62,7 +66,13 @@ function Signin() {
         </div>
       </div>
       <div className="col-span-1 min-h-screen">
-        <Quote person={"Jeff Bezos"} company={"Amazon"} statememt={"I believe you have to be willing to be misunderstood if you're going to innovate"} />
+        <Quote
+          person={"Jeff Bezos"}
+          company={"Amazon"}
+          statememt={
+            "I believe you have to be willing to be misunderstood if you're going to innovate"
+          }
+        />
       </div>
     </div>
   );

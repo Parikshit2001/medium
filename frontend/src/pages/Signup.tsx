@@ -9,24 +9,27 @@ function Signup() {
   const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleClick = async () => {
     axios
-      .post(`${URL}/api/v1/user/signup`, {
-        name: username,
-        email,
-        password,
-      })
+      .post(
+        `${URL}/api/v1/user/signup`,
+        {
+          name: username,
+          email,
+          password,
+        },
+        { withCredentials: true }
+      )
       .then((response) => {
-        localStorage.setItem("token", response.data.jwt);
-        navigate("/blogs")
+        console.log(response);
+        navigate("/blogs");
       })
       .catch((response) => {
-        alert(response.response.data.error)
+        alert(response.response.data.error);
       })
-      .finally(() => {
-      });
+      .finally(() => {});
   };
 
   return (
