@@ -2,8 +2,10 @@ import { createBlogInput, updateBlogInput } from "@parik100x/medium-common-app";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { Hono } from "hono";
+import { getCookie } from "hono/cookie";
 import { verify } from "hono/jwt";
 import { JWTPayload } from "hono/utils/jwt/types";
+import { TOKEN } from "./constants";
 
 export const blogRouter = new Hono<{
   Bindings: {
@@ -73,11 +75,7 @@ blogRouter.get("/:id", async (c) => {
 
 blogRouter.use("/*", async (c, next) => {
   try {
-    const authorizationHeader = c.req.header("authorization");
-    if (!authorizationHeader?.startsWith("Bearer")) {
-      throw new Error("authorization Header does not starts with Bearer");
-    }
-    const token = await authorizationHeader?.split(" ")[1];
+    const token = getCookie(c, TOKEN);
     if (!token) {
       throw new Error("No token found in authorization header");
     }

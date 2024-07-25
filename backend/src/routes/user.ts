@@ -2,7 +2,9 @@ import { signinInput, signupInput } from "@parik100x/medium-common-app";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { Hono } from "hono";
+import { setCookie } from "hono/cookie";
 import { sign } from "hono/jwt";
+import { TOKEN } from "./constants";
 
 export const userRouter = new Hono<{
   Bindings: {
@@ -47,7 +49,15 @@ userRouter.post("/signup", async (c) => {
     }
 
     const jwt = await sign({ id: user.id }, c.env.JWT_SECRET);
-    return c.json({ jwt });
+    const options = {
+      httpOnly: true,
+      secure: true,
+    };
+    c.status(200);
+    setCookie(c, TOKEN, jwt, options);
+    return c.json({
+      message: "Account creation successful",
+    });
   } catch (error: any) {
     console.error(error);
     c.status(403);
@@ -65,26 +75,32 @@ userRouter.post("/signin", async (c) => {
     if (!prisma) {
       throw new Error("Error while initilaisin");
     }
-    const { email, password } = await c.req.json();
     const body = await c.req.json();
-    // signupInput.parse(body)
-    //
     const { success } = signinInput.safeParse(body);
     if (!success) {
       throw new Error("Invalid inputs");
     }
+    const { email, password } = body;
+
     const user = await prisma.user.findUnique({
       where: {
         email: email,
-        password: password,
       },
     });
     if (!user) {
-      throw new Error("User not found, Invalid email/password combination")
+      throw new Error("User not found, Invalid email/password combination");
     }
     
     const jwt = await sign({ id: user.id }, c.env.JWT_SECRET);
-    return c.json({ jwt });
+    const options = {
+      httpOnly: true,
+      secure: true,
+    };
+    c.status(200);
+    setCookie(c, TOKEN, jwt, options);
+    return c.json({
+      message: "Login Successful",
+    });
   } catch (error: any) {
     console.error(error);
     c.status(403);
