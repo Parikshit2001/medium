@@ -57,6 +57,7 @@ userRouter.post("/signup", async (c) => {
     const options = {
       httpOnly: true,
       secure: true,
+      sameSite: "none" as "none",
     };
     c.status(200);
     setCookie(c, TOKEN, jwt, options);
@@ -101,6 +102,7 @@ userRouter.post("/signin", async (c) => {
     const options = {
       httpOnly: true,
       secure: true,
+      sameSite: "none" as "none",
     };
     c.status(200);
     setCookie(c, TOKEN, jwt, options);

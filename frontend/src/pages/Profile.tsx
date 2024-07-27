@@ -1,6 +1,27 @@
+import { useEffect, useState } from "react";
 import { Appbar, Avatar } from "../components";
+import axios from "axios";
+import { URL } from "../constants/constants";
+import { useNavigate } from "react-router-dom";
 
 function Profile() {
+  const [name, setName] = useState("");
+  const navigate = useNavigate();
+  useEffect(() => {
+    const getData = async () => {
+      axios
+        .get(`${URL}/api/v1/user/info`, { withCredentials: true })
+        .then((response) => {
+          setName(response.data.name);
+        })
+        .catch((error) => {
+          console.log(error);
+          navigate("/signin");
+        });
+    };
+    getData();
+  }, []);
+  console.log(name);
   return (
     <div>
       <Appbar />
@@ -10,7 +31,7 @@ function Profile() {
           <div className="w-full max-w-[640px] pl-20 pt-16 flex flex-col space-y-5">
             <div className="flex justify-between">
               <div>
-                <h1 className="text-4xl font-bold">Parikshitgupta</h1>
+                <h1 className="text-4xl font-bold">{name}</h1>
               </div>
               <div>three dots</div>
             </div>
@@ -27,10 +48,15 @@ function Profile() {
             <div className="border flex flex-col space-y-2 p-6">
               <div className="flex items-center space-x-1">
                 <div>
-                  <Avatar character="P" className="text-xs w-5 h-5"/>
+                  {name && (
+                    <Avatar
+                      character={name[0].toUpperCase()}
+                      className="text-xs w-5 h-5"
+                    />
+                  )}
                 </div>
                 <div>
-                  <h2>Parikshitgutpa</h2>
+                  <h2>{name}</h2>
                 </div>
               </div>
               <div>
@@ -46,14 +72,20 @@ function Profile() {
         {/* Right Side */}
         <div className="col-span-4 border-l-[1px] flex flex-col space-y-3 pt-10 pl-8">
           <div>
-
-          <Avatar character="P" className="p-8 text-5xl" />
+            {name && (
+              <Avatar
+                character={name[0].toUpperCase()}
+                className="p-8 text-5xl"
+              />
+            )}
           </div>
           <div>
-            <h3>Parikshitgupta</h3>
+            <h3>{name}</h3>
           </div>
           <div>
-            <button className="text-xs font-semibold text-green-500">Edit Profile</button>
+            <button className="text-xs font-semibold text-green-500">
+              Edit Profile
+            </button>
           </div>
         </div>
       </div>
