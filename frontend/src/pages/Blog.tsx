@@ -17,7 +17,7 @@ function Blog() {
       });
     };
     getBlog();
-  }, []);
+  });
   return (
     <div>
       <Appbar />
@@ -29,7 +29,7 @@ function Blog() {
           {/* Date Posted */}
           <h2 className="text-gray-500">Posted on Aug 24, 2023</h2>
           {/* Content/Article */}
-          <p className="py-2">{content}</p>
+          <pre className="py-2 max-w-md whitespace-pre-wrap">{content}</pre>
         </div>
         {/* Right Part */}
         <div className="w-1/4 hidden lg:flex flex-col space-y-3 fixed right-10">

@@ -1,10 +1,25 @@
-interface buttonType {
+interface buttonInterface {
   label: string;
-  onClick: () => void;
+  isSubmittingLabel: string;
+  type: "submit" | "button" | "reset";
+  isSubmitting: boolean;
 }
 
-function Button({ label, onClick }: buttonType) {
-  return <button onClick={onClick} className="text-white bg-black rounded-lg py-2">{label}</button>;
+function Button({
+  label,
+  isSubmittingLabel,
+  type,
+  isSubmitting,
+}: buttonInterface) {
+  return (
+    <button
+      type={type}
+      className="text-white bg-black rounded-lg py-2"
+      disabled={isSubmitting}
+    >
+      {isSubmitting ? isSubmittingLabel : label}
+    </button>
+  );
 }
 
 export default Button;

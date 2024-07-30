@@ -1,35 +1,51 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button, Inputbox, Quote } from "../components";
 import { v4 as uuid } from "uuid";
-import { useState } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { URL } from "../constants/constants";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { SignupInput } from "@parik100x/medium-common-app";
 
 function Signup() {
-  const [username, setUsername] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  // const [username, setUsername] = useState<string>("");
+  // const [email, setEmail] = useState<string>("");
+  // const [password, setPassword] = useState<string>("");
   const navigate = useNavigate();
 
-  const handleClick = async () => {
-    axios
-      .post(
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { isSubmitting, errors },
+  } = useForm<SignupInput>();
+
+  const onSubmit: SubmitHandler<SignupInput> = async ({
+    name,
+    email,
+    password,
+  }) => {
+    try {
+      const response = await axios.post(
         `${URL}/api/v1/user/signup`,
         {
-          name: username,
+          name,
           email,
           password,
         },
         { withCredentials: true }
-      )
-      .then((response) => {
-        console.log(response);
-        navigate("/blogs");
-      })
-      .catch((response) => {
-        alert(response.response.data.error);
-      })
-      .finally(() => {});
+      );
+      console.log(response.data);
+      navigate("/blogs");
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        console.log("error: ", error.response?.data.error);
+        setError("root", {
+          message: error.response?.data.error,
+        });
+      } else {
+        alert("Error Submitting form");
+      }
+    }
   };
 
   return (
@@ -45,29 +61,42 @@ function Signup() {
               </Link>
             </h2>
           </div>
-          <div className="flex flex-col space-y-5">
-            <Inputbox
-              id={uuid()}
-              label="Username"
-              placeholder="Enter your username"
-              value={username}
-              setValue={setUsername}
-            />
-            <Inputbox
-              value={email}
-              setValue={setEmail}
-              id={uuid()}
-              label="Email"
-              placeholder="m@example.com"
-            />
-            <Inputbox
-              value={password}
-              setValue={setPassword}
-              id={uuid()}
-              label="Password"
-              type="password"
-            />
-            <Button label="Sign Up" onClick={handleClick} />
+          <div className="">
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="flex flex-col space-y-5"
+            >
+              <Inputbox
+                id={uuid()}
+                label="Name"
+                placeholder="Enter your name"
+                reg={{ ...register("name") }}
+              />
+              <Inputbox
+                id={uuid()}
+                label="Email"
+                placeholder="m@example.com"
+                reg={{ ...register("email") }}
+              />
+              <Inputbox
+                id={uuid()}
+                label="Password"
+                type="password"
+                placeholder="password"
+                reg={{ ...register("password") }}
+              />
+              <Button
+                label="Sign Up"
+                isSubmitting={isSubmitting}
+                isSubmittingLabel="Loading..."
+                type="submit"
+              />
+              {errors.root && (
+                <div className="text-red-500 text-sm">
+                  {errors.root.message}
+                </div>
+              )}
+            </form>
           </div>
         </div>
       </div>
